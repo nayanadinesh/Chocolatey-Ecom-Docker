@@ -1,0 +1,147 @@
+/* ***************************   LOGIN FORM     ************************************* */
+
+.form-container-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  overflow: visible;
+  margin: 0;
+  padding: 20px 0;
+}
+
+/* Specific styling for login/register forms */
+.form-container-wrapper.login-form {
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+  padding: 0;
+}
+
+/* Prevent scroll bars on login/register pages */
+body:has(.form-container-wrapper.login-form) {
+  overflow: hidden;
+  height: 100vh;
+}
+
+.myrow {
+  margin: 40px;
+  padding: 30px;
+  background-color: #fff;
+  display: flex;
+  border-radius: 5px;
+  // box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);      outside
+  box-shadow: inset 2px 2px 5px #9499a8, inset -5px -5px 10px #fff;
+  background-color: rgba(255, 255, 255, 0.6);
+
+  &:focus {
+    box-shadow: inset 1px 1px 2px #babecc, inset -1px -1px 2px #fff;
+  }
+}
+
+#login_form {
+  color: rgba(223, 216, 216, 0.959);
+  font-size: 1.1rem;
+  font-family: "PT Serif", serif;
+}
+
+.form_box {
+  padding: 1px 30px;
+  border-radius: 0.4rem;
+  font-size: 17px;
+  background-color: rgba(255, 255, 255, 0.959);
+}
+
+.form-group {
+  margin-bottom: 1.4rem;
+}
+
+#checkout {
+  color: rgba(255, 255, 255, 0.925);
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+#checkout:hover {
+  color: rgb(255, 29, 135);
+}
+
+#checkoutDisabled {
+  color: rgba(158, 155, 155, 0.925);
+  font-size: 0.9rem;
+}
+
+.profileIcon {
+  padding-right: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.paymentSub {
+  font-family: "PT Serif", serif;
+  color: #fff;
+}
+
+.paymentSub1 {
+  padding: 0.2rem;
+  font-family: "PT Serif", serif;
+  color: #fff;
+  font-size: 1rem;
+}
+
+// --------------------------------
+// NEON BUTTON
+// --------------------------------
+.customButton {
+  color: #fff;
+  padding: 6px 19px;
+  font-family: "PT Serif", serif;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+}
+
+.neonBtn {
+  color: #f6d365;
+  border: 1px solid #f6d365;
+  box-shadow: 0 0 5px #f6d365, 0 0 5px #f6d365 inset;
+  z-index: 2;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+.neonBtn:after {
+  position: absolute;
+  content: " ";
+  z-index: -1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: all 0.3s ease;
+}
+.neonBtn:hover {
+  color: #000;
+}
+.neonBtn:hover:after {
+  background: #f6d365;
+  -webkit-transform: scale(2) rotate(180deg);
+  transform: scale(2) rotate(180deg);
+  box-shadow: 4px 4px 6px 0 rgba(255, 255, 255, 1),
+    -4px -4px 6px 0 rgba(116, 125, 136, 0.2),
+    inset -4px -4px 6px 0 rgba(255, 255, 255, 1),
+    inset 4px 4px 6px 0 rgba(116, 125, 136, 0.3);
+}
+
+@media (max-width: 450px) {
+  .form-container-wrapper {
+    height: 100vh;
+    padding: 0;
+  }
+  .myrow {
+    margin: 20px auto;
+    padding: 8px;
+  }
+  #login_form {
+    font-size: 1rem;
+  }
+}

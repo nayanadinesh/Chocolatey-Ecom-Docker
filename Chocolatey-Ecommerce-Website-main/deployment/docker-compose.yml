@@ -1,0 +1,44 @@
+services:
+  chocolatey-backend:
+    container_name: chocolatey-backend
+    image: niharikadutta/chocolatey-backend:v0.0.1
+    restart: always
+    ports:
+      - "5050:5050"
+    env_file:
+      - .env
+    networks:
+      - chocolatey-network
+      - prod_network
+
+  chocolatey-frontend:
+    container_name: chocolatey-frontend
+    image: chocolatey-frontend:latest
+    restart: always
+    ports:
+    - "3000:3000"
+    networks:
+    - chocolatey-network
+    - prod_network
+
+
+  mongo:
+    container_name: chocolatey-mongo
+    image: mongo:5
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    networks:
+      - chocolatey-network
+      - prod_network
+
+networks:
+  chocolatey-network:
+    driver: bridge
+    external: true
+  prod_network:
+    driver: bridge
+    external: true

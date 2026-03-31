@@ -1,0 +1,126 @@
+/*
+  req.params ---> contains route parameters (in the path portion of the URL),
+                  If route is /user/:id, then request to http://localhost:3200/user/5 - req.params would yield {id: "5"}
+
+  req.query --->  contains the URL query parameters (after the ? in the URL).
+                  http://localhost:3200/user?name=tom&age=55 - req.query would yield {name:"tom", age: "55"}
+
+  req.query is an object containing the property for each query string parameter in the route.
+  req.params will return parameters in the matched route. If your req.param is a function that peels parameters out of the request.
+
+  Content-Type Header ----->  tells the client what the content type of the returned content .
+*/
+
+// syntax using ES6 Modules
+import express from "express";
+import dotenv from "dotenv";
+import ConnectDB from "./config/DB.js";
+import { notFound, errorHandler } from "./Middleware/Error_middleware.js";
+import cors from "cors";
+import path from "path";
+import product_routes from "./Routes/product_routes.js";
+import user_routes from "./Routes/user_routes.js";
+import order_routes from "./Routes/order_routes.js";
+import upload_routes from "./Routes/upload_routes.js";
+
+dotenv.config();
+ConnectDB();
+const app = express();
+
+app.use(express.json());
+app.use(cors());
+/* app.use(
+    cors({
+      origin: "*", // <-- location of the react app were connecting to
+      credentials: true,
+    })
+  ); */
+
+app.use(express.json()); // allows json data in the body
+// process.env.NODE_ENV === "development" && app.use(morgan("dev")); // popular HTTP request logger middleware for nodejs
+
+// SYNTAX: app.get( path, callback )
+/* app.get("/", (req, res) => {
+    res.send("API is running succesfully");
+  }); */
+
+// http://localhost:5050/users/getUser/userid11/postid22
+/* app.get('/users/getUser/:userid/:postid', (req, res) => {
+    console.log(req.params); // {userid: userid11, postid: postid22}
+    res.send({});
+  })
+
+  // http://localhost:5050/users/getUser?userid=userid11&postid=postid22 ----- /users/getUser?userid&postid
+  // http://localhost:5050/user?name=Niharika&age=11
+  app.get('/user', (req, res) => {
+    console.log("Name: ", req.query.name);
+    console.log("Age:", req.query.age);
+    console.log(req.query);      // {userid: userid11, postid: postid22}
+    console.log(req.body);       // {}
+    res.send();
+  }) */
+
+// GET method Route  --- shifted to product_routes
+/* app.get('/api/products', function (req, res) {
+    console.log("Triggered route");
+    res.json(products);
+  })
+
+  app.get('/api/products/:id', (req, res) => {
+    const prod = products.find((p) => p._id === req.params.id);
+    res.send(prod);
+  }) */
+
+// Express processes routes in the order they're defined:
+
+// SYNTAX: app.use(path, callback)
+app.use("/api/products", product_routes);
+app.use("/api/users", user_routes);
+app.use("/api/orders", order_routes);
+app.use("/api/upload", upload_routes);
+
+app.get("/api/config/paypal", (req, res) => {
+  res.send(process.env.PAYPAL_CLIENT_ID);
+});
+
+const __dirname = path.resolve();
+
+app.use(express.static(path.join(__dirname, "./uploads")));
+// app.use('./uploads', express.static(path.join(__dirname, './uploads'))); // __dirname ----> is available in express with common JS,but as we are using ES^ so we have to make that
+// console.log("path = ", (path.join(__dirname, './uploads')))
+
+// Serve React frontend build files for both development and production environment without running the frontend server separately at port 3000
+// Development: serve from ../frontend/build
+// Production: serve from ./public (Docker container)
+const buildPath =
+  process.env.NODE_ENV === "production"
+    ? path.join(__dirname, "./public")
+    : path.join(__dirname, "../frontend/build");
+
+// Serve static files from React build
+app.use(express.static(buildPath));
+
+// Handle React Router - return index.html for all non-API routes
+app.get("*", (req, res) => {
+  if (req.path.startsWith("/api/")) {
+    return res.status(404).json({ message: "API route not found" });
+  }
+
+  // Serve React frontend for all other routes
+  res.sendFile(path.join(buildPath, "index.html"));
+});
+
+app.use(notFound);
+app.use(errorHandler);
+
+const port = process.env.PORT || 5050;
+app.listen(
+  port,
+  console.log(
+    `Server Connected in ${port} for ${process.env.NODE_ENV}`.cyan.bold
+  )
+);
+
+// npm run dev         -> starts both frontend and backend
+// npm run data:import -> for importing into database
+// npm run server      -> starts only backend (with nodemon)
